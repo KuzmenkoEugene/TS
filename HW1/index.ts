@@ -1,7 +1,7 @@
 class School {
   directions: any = [];
 
-  addDirection(direction: string): any {
+  addDirection(direction: string): void {
     this.directions.push(direction);
   }
 }
@@ -14,11 +14,11 @@ class Direction {
     this._name = name;
   }
 
-  get name(): any {
+  get name(): string {
     return this._name;
   }
 
-  addLevel(level: string): any {
+  addLevel(level: string): void {
     this.levels.push(level);
   }
 }
@@ -33,15 +33,15 @@ class Level {
     this._program = program;
   }
 
-  get name(): any {
+  get name(): string {
     return this._name;
   }
 
-  get program(): any {
+  get program(): string {
     return this._program;
   }
 
-  addGroup(group: string): any {
+  addGroup(group: string): void {
     this.groups.push(group);
   }
 }
@@ -60,12 +60,12 @@ class Group {
     return this._students;
   }
 
-  addStudent(student: string): any {
+  addStudent(student: string): void {
     this._students.push(student);
   }
 
-  showPerformance() {
-    const sortedStudents = this.students.toSorted(
+  showPerformance(): string {
+    const sortedStudents: string = this.students.toSorted(
       (a: any, b: any) => b.getPerformanceRating() - a.getPerformanceRating()
     );
 
@@ -86,7 +86,7 @@ class Student {
     this.birthYear = birthYear;
   }
 
-  get fullName(): any {
+  get fullName(): string {
     return `${this.lastName} ${this.firstName}`;
   }
 
@@ -94,15 +94,15 @@ class Student {
     [this.lastName, this.firstName] = value.split(" ");
   }
 
-  get age(): any {
+  get age(): number {
     return new Date().getFullYear() - this.birthYear;
   }
 
-  setGrade(subject: string, grade: number): any {
+  setGrade(subject: string, grade: number) {
     this.grades[subject] = grade;
   }
 
-  markAttendance(present: number): any {
+  markAttendance(present: number): void {
     this.attendance.push(present);
   }
 
