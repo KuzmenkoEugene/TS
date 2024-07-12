@@ -1,92 +1,107 @@
-// type Lecturers = {
-//   name: string,
-//   surname: string,
-//   position: string,
-//   company: string,
-//   experience: string,
-//   courses: string,
-//   contacts: string
-// }
-// class School {
-//   public _areas: string[] = [];
-//   public _lecturers: Lecturers[] = []; 
-//   addArea(area: string): void {
-//     this._areas.push(area)
-//   }
-//   removeArea(areaName: string): void {
-//     this._areas = this._areas.filter(area => area !== areaName);
-//   }
-//   addLecturer(lecturers: Lecturers): void {
-//     this._lecturers.push(lecturers)
-//   }
-//   removeLecturer(name: string): void {
-//     this._lecturers = this._lecturers.filter(lecturer => lecturer.name !== name);
-//   }
-//   get areas(): string[] {
-//     return this._areas;
-//   }
-//   get lecturers(): Lecturers[] {
-//     return this._lecturers;
-//   }
-// }
-// class Area {
-//   public _levels: string[] = [];
-//   public _name: string = ''
-//   constructor(name: string) {
-//     this._name = name;
-//   }
-//   addLevels(level: string): void {
-//     this._levels.push(level)
-//   }
-//   removeLevels(levelValue: string): void {
-//     this._levels = this._levels.filter(level => level !== levelValue);
-//   }
-//   get levels(): string[] {
-//     return this._levels
-//   }
-// }
-// class Level {
-//   public _groups: string[] = [];
-//   public _name: string = '';
-//   constructor(name: string, groups: string[]) {
-//     this._name = name;
-//     this._groups = groups;
-//   }
-//   addGroups(groups: string): void {
-//     this._groups.push(groups)
-//   }
-//   removeGroups(): void {
-//     this._groups.shift()
-//   }
-//   get groups(): string[] {
-//     return this._groups
-//   }
-// }
-// class Group {
-//   // implement getters for fields and 'add/remove student' and 'set status' methods
-//   public _area: string[] = [];
-//   public _status: string = '';
-//   public _students = []; // Modify the array so that it has a valid toSorted method*
-//   public _directionName: string;
-//   public _levelName: string 
-//   constructor(directionName: string, levelName: string) {
-//     this._directionName = directionName;
-//     this._levelName = levelName;
-//   }
-//   addStudent(directionName: string, levelName: string) {
-//     this._students.push()
-//   }
-//   removeStudent(directionName: string, levelName: string) {
-//     this._students.push()
-//   }
-//   set status(status: string) {
-//      this._status = status
-//   }
-//   showPerformance() {
-//     const sortedStudents = this._students.toSorted((a, b) => b.getPerformanceRating() - a.getPerformanceRating());
-//     return sortedStudents;
-//   }
-// }
+var School = /** @class */ (function () {
+    function School() {
+        this._areas = [];
+        this._lecturers = [];
+    }
+    School.prototype.addArea = function (area) {
+        this._areas.push(area);
+    };
+    School.prototype.removeArea = function (areaName) {
+        this._areas = this._areas.filter(function (area) { return area !== areaName; });
+    };
+    School.prototype.addLecturer = function (lecturers) {
+        this._lecturers.push(lecturers);
+    };
+    School.prototype.removeLecturer = function (name) {
+        this._lecturers = this._lecturers.filter(function (lecturer) { return lecturer.name !== name; });
+    };
+    Object.defineProperty(School.prototype, "areas", {
+        get: function () {
+            return this._areas;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(School.prototype, "lecturers", {
+        get: function () {
+            return this._lecturers;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return School;
+}());
+var Area = /** @class */ (function () {
+    function Area(name) {
+        this._levels = [];
+        this._name = '';
+        this._name = name;
+    }
+    Area.prototype.addLevel = function (level) {
+        this._levels.push(level);
+    };
+    Area.prototype.removeLevel = function (levelValue) {
+        this._levels = this._levels.filter(function (level) { return level !== levelValue; });
+    };
+    Object.defineProperty(Area.prototype, "levels", {
+        get: function () {
+            return this._levels;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return Area;
+}());
+var Level = /** @class */ (function () {
+    function Level(name, description) {
+        this._groups = [];
+        this._name = '';
+        this._description = '';
+        this._name = name;
+        this._description = description;
+    }
+    Level.prototype.addGroup = function (groups) {
+        this._groups.push(groups);
+    };
+    Level.prototype.removeGroup = function (valueGroup) {
+        this._groups = this._groups.filter(function (group) { return group !== valueGroup; });
+    };
+    Object.defineProperty(Level.prototype, "groups", {
+        get: function () {
+            return this._groups;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return Level;
+}());
+var Group = /** @class */ (function () {
+    function Group(directionName, levelName) {
+        this._area = '';
+        this._status = '';
+        this._students = [];
+        this._directionName = directionName;
+        this._levelName = levelName;
+    }
+    Group.prototype.addStudent = function (name) {
+        this._students.push(name);
+    };
+    Group.prototype.removeStudent = function (name) {
+        this._students = this._students.filter(function (student) { return student != name; });
+    };
+    Object.defineProperty(Group.prototype, "status", {
+        set: function (status) {
+            this._status = status;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Group.prototype.showPerformance = function () {
+        var sortedStudents = this._students.toSorted(function (a, b) { return b.getPerformanceRating() - a.getPerformanceRating(); });
+        return sortedStudents;
+    };
+    return Group;
+}());
 var Student = /** @class */ (function () {
     function Student(firstName, lastName, birthYear) {
         this._grades = [];
@@ -137,8 +152,3 @@ var Student = /** @class */ (function () {
     };
     return Student;
 }());
-var studentPerson = new Student('Eugene', 'Kuzmenko', 1994);
-console.log(studentPerson.fullName);
-studentPerson.grades = 100, 22, 100, 100;
-studentPerson.visits = 43, 10, 55, 100;
-console.log(studentPerson.getPerformanceRating());
