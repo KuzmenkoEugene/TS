@@ -1,3 +1,4 @@
+
 interface Iprint {
   print(): string;
 }
@@ -19,9 +20,9 @@ class Circle extends Shapes {
 }
 
 class Rectangle extends Shapes implements Iprint {
-  private _width: number = 0;
-  private _height: number = 0;
-  private result: number = 0;
+  private _width!: number;
+  private _height!: number;
+  private result!: number;
 
   constructor(name: string, color: string) {
     super(name, color);
@@ -35,7 +36,7 @@ class Rectangle extends Shapes implements Iprint {
 
   public print(): string {
     if (this.result === 0) {
-      throw new Error();
+      throw Error();
     }
 
     return `${this._width} * ${this._height} = ${this.result}`;
@@ -43,8 +44,8 @@ class Rectangle extends Shapes implements Iprint {
 }
 
 class Square extends Shapes implements Iprint {
-  private _side: number = 0;
-  private result: number = 0;
+  private _side!: number;
+  private result!: number;
 
   constructor(name: string, color: string) {
     super(name, color);
@@ -57,7 +58,7 @@ class Square extends Shapes implements Iprint {
 
   public print(): string {
     if (this.result === 0) {
-      throw new Error();
+      throw Error();
     }
 
     return `${this._side}^${2} = ${this.result}`;
