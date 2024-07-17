@@ -33,7 +33,11 @@ var Circle = /** @class */ (function (_super) {
 var Rectangle = /** @class */ (function (_super) {
     __extends(Rectangle, _super);
     function Rectangle(name, color) {
-        return _super.call(this, name, color) || this;
+        var _this = _super.call(this, name, color) || this;
+        _this._width = 0;
+        _this._height = 0;
+        _this.result = 0;
+        return _this;
     }
     Rectangle.prototype.calculateArea = function (width, height) {
         this._width = width;
@@ -51,7 +55,10 @@ var Rectangle = /** @class */ (function (_super) {
 var Square = /** @class */ (function (_super) {
     __extends(Square, _super);
     function Square(name, color) {
-        return _super.call(this, name, color) || this;
+        var _this = _super.call(this, name, color) || this;
+        _this._side = 0;
+        _this.result = 0;
+        return _this;
     }
     Square.prototype.calculateArea = function (side) {
         this._side = side;
@@ -65,6 +72,9 @@ var Square = /** @class */ (function (_super) {
     };
     return Square;
 }(Shapes));
+var abc = new Square('top', 'yellow');
+abc.calculateArea(5);
+console.log(abc.print());
 var Triangle = /** @class */ (function (_super) {
     __extends(Triangle, _super);
     function Triangle(name, color) {
