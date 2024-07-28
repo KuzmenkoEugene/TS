@@ -1,7 +1,3 @@
-import { LocalStorage } from "node-localstorage";
-
-const localStorage = new LocalStorage("./scratch");
-
 abstract class Vehicle {
   constructor(public brand: string) {}
   abstract getType(): string;

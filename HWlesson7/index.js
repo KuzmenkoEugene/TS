@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -25,9 +24,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var node_localstorage_1 = require("node-localstorage");
-var localStorage = new node_localstorage_1.LocalStorage("./scratch");
 var Vehicle = /** @class */ (function () {
     function Vehicle(brand) {
         this.brand = brand;
