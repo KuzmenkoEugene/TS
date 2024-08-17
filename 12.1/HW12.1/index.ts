@@ -27,10 +27,10 @@ type GridFilterSetValues<T> = {
 };
 
 abstract class Filters<T> {
-  protected filters: GridFilterValue<any>[] = [];
+  protected filters: GridFilterValue<T>[] = [];
   protected searchValues: GridFilterSetValues<string>[] = []; 
 
-  applyFiltersValue(filters: GridFilterValue<any>[]): void {
+  applyFiltersValue(filters: GridFilterValue<T>[]): void {
     this.filters = filters; 
   }
 
