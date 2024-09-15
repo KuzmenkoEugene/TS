@@ -27,10 +27,10 @@ class Note implements INote {
 
   constructor(id: number, title: string, text: string, noteType: TodoType) {
     if (!title) {
-      throw new Error("Your title is empty");
+      throw new Error("Title is empty");
     }
     if (!text) {
-      throw new Error("Your text is empty");
+      throw new Error("Text is empty");
     }
 
     this.id = id;
@@ -49,7 +49,7 @@ class Note implements INote {
 
   edit(field: ItemType, newValue: string, confirm: boolean = true): void {
     if (this.noteType === "СonfirmationOfEditing" && !confirm) {
-      throw new Error("сonfirmation required");
+      throw new Error("Editing requires confirmation");
     }
 
     this[field] = newValue;
@@ -63,7 +63,7 @@ class TodoList {
 
   addNote(title: string, text: string, noteType: TodoType = "Default"): INote {
     if (!title || !text) {
-      throw new Error("title and text is empty");
+      throw new Error("Title and text cannot be empty");
     }
 
     const newNote: INote = {
@@ -86,14 +86,21 @@ class TodoList {
     newValue: string,
     confirm: boolean = true
   ): string | INote[] {
-    const note = this.list.find((note) => note.id === id);
+    let note: INote | null = null;
+
+    for (let i = 0; i < this.list.length; i++) {
+      if (this.list[i].id === id) {
+        note = this.list[i];
+        break;
+      }
+    }
 
     if (!note) {
       return "Note not found";
     }
 
     if (note.noteType === "СonfirmationOfEditing" && !confirm) {
-      throw new Error("сonfirmation required");
+      throw new Error("Editing requires confirmation");
     }
 
     note[field] = newValue;
@@ -102,18 +109,33 @@ class TodoList {
   }
 
   deleteNote(id: number): INote | string {
-    const noteIndex = this.list.findIndex((note) => note.id === id);
+    let noteIndex: number = -1;
+
+    for (let i = 0; i < this.list.length; i++) {
+      if (this.list[i].id === id) {
+        noteIndex = i;
+        break;
+      }
+    }
 
     if (noteIndex !== -1) {
       return this.list.splice(noteIndex, 1)[0];
     }
 
-    return "note not found";
+    return "Note not found";
   }
 
   getNote(id: number): INote | string {
-    const note = this.list.find((note) => note.id === id);
-    return note ? note : "note not found";
+    let note: INote | null = null;
+
+    for (let i = 0; i < this.list.length; i++) {
+      if (this.list[i].id === id) {
+        note = this.list[i];
+        break;
+      }
+    }
+
+    return note ? note : "Note not found";
   }
 
   getAllNotes(): INote[] {
@@ -129,10 +151,17 @@ class TodoList {
   }
 
   markAsCompleted(id: number): INote[] | string {
-    const note = this.list.find((note) => note.id === id);
+    let note: INote | null = null;
+
+    for (let i = 0; i < this.list.length; i++) {
+      if (this.list[i].id === id) {
+        note = this.list[i];
+        break;
+      }
+    }
 
     if (!note) {
-      return "note not found";
+      return "Note not found";
     }
 
     note.status = TodoStatus.Completed;
@@ -141,42 +170,21 @@ class TodoList {
   }
 }
 
-class AdvancedTodoList extends TodoList {
+class SearchableTodoList extends TodoList {
   findNotesByTitleOrText(searchText: string): INote[] {
     const lowerSearchText = searchText.toLowerCase();
 
-    return this.list.filter(
-      (note) =>
-        note.title.toLowerCase().includes(lowerSearchText) ||
-        note.text.toLowerCase().includes(lowerSearchText)
-    );
-  }
-
-  sortNotes(by: "status" | "createdAt"): INote[] {
-    if (by === "status") {
-      return this.list.sort((a, b) => a.status.localeCompare(b.status));
-    } else if (by === "createdAt") {
-      return this.list.sort(
-        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
-      );
-    }
-    return this.list;
-  }
-}
-
-class SearchableTodoList extends TodoList {
-  findNotesByTitleOrText(searchText: string): INote[] {
     return this.getAllNotes().filter(
       (note) =>
-        note.title.toLowerCase().includes(searchText.toLowerCase()) ||
-        note.text.toLowerCase().includes(searchText.toLowerCase())
+        note.title.toLowerCase().indexOf(lowerSearchText) !== -1 ||
+        note.text.toLowerCase().indexOf(lowerSearchText) !== -1
     );
   }
 }
 
 class SortableTodoList extends TodoList {
   sortNotes(sortBy: "status" | "createdAt"): INote[] {
-    const notes = [...this.getAllNotes()]; 
+    const notes = [...this.getAllNotes()];
 
     if (sortBy === "status") {
       return notes.sort((a, b) => {

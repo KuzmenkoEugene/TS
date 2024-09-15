@@ -13,11 +13,50 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var TodoStatus;
 (function (TodoStatus) {
     TodoStatus["Pending"] = "Pending";
     TodoStatus["Completed"] = "Completed";
 })(TodoStatus || (TodoStatus = {}));
+var Note = /** @class */ (function () {
+    function Note(id, title, text, noteType) {
+        if (!title) {
+            throw new Error("Title is empty");
+        }
+        if (!text) {
+            throw new Error("Text is empty");
+        }
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.status = TodoStatus.Pending;
+        this.noteType = noteType;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+    }
+    Note.prototype.markAsCompleted = function () {
+        this.status = TodoStatus.Completed;
+        this.updatedAt = new Date();
+    };
+    Note.prototype.edit = function (field, newValue, confirm) {
+        if (confirm === void 0) { confirm = true; }
+        if (this.noteType === "СonfirmationOfEditing" && !confirm) {
+            throw new Error("Editing requires confirmation");
+        }
+        this[field] = newValue;
+        this.updatedAt = new Date();
+    };
+    return Note;
+}());
 var TodoList = /** @class */ (function () {
     function TodoList() {
         this.list = [];
@@ -25,13 +64,10 @@ var TodoList = /** @class */ (function () {
     }
     TodoList.prototype.addNote = function (title, text, noteType) {
         if (noteType === void 0) { noteType = "Default"; }
-        if (!title) {
-            throw new Error("Your title is empty");
+        if (!title || !text) {
+            throw new Error("Title and text cannot be empty");
         }
-        if (!text) {
-            throw new Error("Your text is empty");
-        }
-        var newTodo = {
+        var newNote = {
             id: this.nextId++,
             title: title,
             text: text,
@@ -40,67 +76,73 @@ var TodoList = /** @class */ (function () {
             createdAt: new Date(),
             updatedAt: new Date(),
         };
-        this.list.push(newTodo);
-        return newTodo;
+        this.list.push(newNote);
+        return newNote;
     };
-    TodoList.prototype.editNote = function (id, name, text, confirm) {
+    TodoList.prototype.editNote = function (id, field, newValue, confirm) {
         if (confirm === void 0) { confirm = true; }
-        var noteFound = false;
-        this.list.forEach(function (el) {
-            if (el.id === id) {
-                if (el.noteType === "СonfirmationOfEditing" && !confirm) {
-                    throw new Error("confirmation required");
-                }
-                el[name] = text;
-                el.updatedAt = new Date();
-                noteFound = true;
+        var note = null;
+        for (var i = 0; i < this.list.length; i++) {
+            if (this.list[i].id === id) {
+                note = this.list[i];
+                break;
             }
-        });
-        if (noteFound) {
-            return this.list;
         }
-        else {
+        if (!note) {
             return "Note not found";
         }
+        if (note.noteType === "СonfirmationOfEditing" && !confirm) {
+            throw new Error("Editing requires confirmation");
+        }
+        note[field] = newValue;
+        note.updatedAt = new Date();
+        return this.list;
     };
     TodoList.prototype.deleteNote = function (id) {
-        var deleteItem = this.list.filter(function (el) { return el.id === id; });
-        if (deleteItem.length > 0) {
-            this.list = this.list.filter(function (el) { return el.id != id; });
-            return deleteItem[0];
+        var noteIndex = -1;
+        for (var i = 0; i < this.list.length; i++) {
+            if (this.list[i].id === id) {
+                noteIndex = i;
+                break;
+            }
         }
-        return "not found";
+        if (noteIndex !== -1) {
+            return this.list.splice(noteIndex, 1)[0];
+        }
+        return "Note not found";
     };
     TodoList.prototype.getNote = function (id) {
-        var itemValue = this.list.filter(function (el) { return el.id === id; });
-        if (itemValue.length > 0)
-            return itemValue[0];
-        return "not found";
+        var note = null;
+        for (var i = 0; i < this.list.length; i++) {
+            if (this.list[i].id === id) {
+                note = this.list[i];
+                break;
+            }
+        }
+        return note ? note : "Note not found";
     };
     TodoList.prototype.getAllNotes = function () {
         return this.list;
     };
-    TodoList.prototype.getNotesNumber = function () {
-        if (this.list.length === 0)
-            return "Notes: 0";
-        var pendingValues = this.list.filter(function (el) { return el.status === TodoStatus.Pending; });
-        return "Notes: ".concat(this.list.length, ", Pending: ").concat(pendingValues.length);
+    TodoList.prototype.getNotesStats = function () {
+        var total = this.list.length;
+        var pending = this.list.filter(function (note) { return note.status === TodoStatus.Pending; }).length;
+        return "Total: ".concat(total, ", Pending: ").concat(pending);
     };
-    TodoList.prototype.doneNote = function (id) {
-        var noteFound = false;
-        this.list.forEach(function (el) {
-            if (el.id === id) {
-                el.status = TodoStatus.Completed;
-                el.updatedAt = new Date();
-                noteFound = true;
+    TodoList.prototype.markAsCompleted = function (id) {
+        var note = null;
+        for (var i = 0; i < this.list.length; i++) {
+            if (this.list[i].id === id) {
+                note = this.list[i];
+                break;
             }
-        });
-        if (noteFound) {
-            return this.list;
         }
-        else {
+        if (!note) {
             return "Note not found";
         }
+        note.status = TodoStatus.Completed;
+        note.updatedAt = new Date();
+        return this.list;
     };
     return TodoList;
 }());
@@ -110,9 +152,10 @@ var SearchableTodoList = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     SearchableTodoList.prototype.findNotesByTitleOrText = function (searchText) {
-        return this.list.filter(function (note) {
-            return note.title.indexOf(searchText) !== -1 ||
-                note.text.indexOf(searchText) !== -1;
+        var lowerSearchText = searchText.toLowerCase();
+        return this.getAllNotes().filter(function (note) {
+            return note.title.toLowerCase().indexOf(lowerSearchText) !== -1 ||
+                note.text.toLowerCase().indexOf(lowerSearchText) !== -1;
         });
     };
     return SearchableTodoList;
@@ -123,8 +166,9 @@ var SortableTodoList = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     SortableTodoList.prototype.sortNotes = function (sortBy) {
+        var notes = __spreadArray([], this.getAllNotes(), true);
         if (sortBy === "status") {
-            return this.list.sort(function (a, b) {
+            return notes.sort(function (a, b) {
                 if (a.status > b.status)
                     return 1;
                 if (a.status < b.status)
@@ -133,9 +177,9 @@ var SortableTodoList = /** @class */ (function (_super) {
             });
         }
         else if (sortBy === "createdAt") {
-            return this.list.sort(function (a, b) { return a.createdAt.getTime() - b.createdAt.getTime(); });
+            return notes.sort(function (a, b) { return a.createdAt.getTime() - b.createdAt.getTime(); });
         }
-        return this.list;
+        return notes;
     };
     return SortableTodoList;
 }(TodoList));
